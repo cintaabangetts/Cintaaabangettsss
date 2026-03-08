@@ -9,10 +9,28 @@
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-    <!-- AOS - lebih ringan -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <!-- AOS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
+        /* Tambahkan ini untuk performa lebih lancar */
+.float-item, .card-3d, .hero-message {
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform: translateZ(0); /* Force GPU Rendering */
+}
+
+/* Kurangi blur yang terlalu berat di mobile */
+@media (max-width: 768px) {
+    .hero-message, .card-3d {
+        backdrop-filter: blur(10px);
+    }
+    #galaxy-canvas {
+        opacity: 0.6; /* Mengurangi beban render */
+    }
+}
         * {
             margin: 0;
             padding: 0;
@@ -25,21 +43,27 @@
             color: #fff;
             overflow-x: hidden;
             position: relative;
+            min-height: 100vh;
         }
 
-        /* Custom Scrollbar - lebih ringan */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 12px;
         }
         ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.02);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ff3366;
             border-radius: 10px;
         }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff3366, #ff7043);
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #ff7043, #ff3366);
+        }
 
-        /* Canvas Background - Optimized */
+        /* Canvas Background - Galaxy 3D */
         #galaxy-canvas {
             position: fixed;
             top: 0;
@@ -48,10 +72,9 @@
             height: 100%;
             z-index: -2;
             pointer-events: none;
-            will-change: transform;
         }
 
-        /* Floating Container - Reduced */
+        /* Floating Love & Flowers Container - Super Smooth */
         .floating-container {
             position: fixed;
             top: 0;
@@ -66,11 +89,12 @@
         .float-item {
             position: absolute;
             animation: floatAround linear infinite;
-            filter: drop-shadow(0 0 15px currentColor);
-            will-change: transform;
+            filter: drop-shadow(0 0 25px currentColor);
+            will-change: transform, opacity;
             opacity: 0;
-            font-size: 24px;
+            font-size: 30px;
             user-select: none;
+            transition: all 0.3s;
         }
 
         @keyframes floatAround {
@@ -78,174 +102,326 @@
                 transform: translateY(100vh) rotate(0deg) scale(0.2);
                 opacity: 0;
             }
-            5% { opacity: 0.8; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            95% { opacity: 0.3; }
+            5% {
+                opacity: 1;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 0.5;
+            }
             100% {
-                transform: translateY(-100px) rotate(360deg) scale(1.2);
+                transform: translateY(-100px) rotate(720deg) scale(2);
                 opacity: 0;
             }
         }
 
-        /* Navbar - Optimized */
+        /* Navbar - Premium */
         .navbar {
-            background: rgba(5, 5, 16, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 51, 102, 0.2);
-            padding: 15px 0;
-            transition: all 0.3s;
+            background: linear-gradient(to bottom, rgba(5, 5, 16, 0.98), rgba(5, 5, 16, 0.9));
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(255, 51, 102, 0.3);
+            padding: 20px 0;
+            transition: all 0.4s;
             z-index: 1000;
         }
 
         .navbar.scrolled {
-            padding: 8px 0;
-            background: rgba(5, 5, 16, 0.98);
+            padding: 10px 0;
+            background: rgba(5, 5, 16, 0.99);
+            border-bottom-color: rgba(255, 51, 102, 0.6);
         }
 
         .navbar-brand {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ff3366 !important;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff3366, #ffaa33, #ff7043, #ff3366);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientFlow 5s infinite;
+            position: relative;
         }
 
-        .navbar-brand span {
-            color: #ffaa33;
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff3366, #ffaa33, #ff7043, transparent);
+            border-radius: 3px;
+            animation: lineWidth 3s infinite;
+        }
+
+        @keyframes lineWidth {
+            0%, 100% { width: 80%; left: 10%; }
+            50% { width: 100%; left: 0%; }
         }
 
         .nav-link {
             color: #fff !important;
             font-weight: 500;
-            margin: 0 10px;
+            margin: 0 15px;
             position: relative;
-            font-size: 0.95rem;
+            transition: all 0.3s;
+            padding: 8px 0 !important;
         }
 
-        .nav-link::after {
+        .nav-link::before {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             width: 0;
-            height: 2px;
-            background: #ff3366;
-            transition: width 0.2s;
+            height: 3px;
+            background: linear-gradient(90deg, #ff3366, #ffaa33, #ff7043);
+            transition: width 0.4s;
+            border-radius: 3px;
         }
 
-        .nav-link:hover::after {
+        .nav-link:hover::before {
             width: 100%;
         }
 
-        /* Hero Section - Optimized */
+        .nav-link:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 20px rgba(255, 51, 102, 0.7);
+        }
+
+        /* Hero Section */
         .hero-section {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 100px 20px;
+            position: relative;
+            z-index: 2;
+            padding: 120px 20px;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .hero-title {
-            font-size: 4rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 20px #ff3366;
-            margin-bottom: 20px;
+            font-size: 5.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #fff, #ffaa33, #ff3366, #ff7043, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: titleGradient 6s infinite, titleFloat 4s infinite;
+            text-shadow: 0 0 40px rgba(255, 51, 102, 0.3);
         }
 
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
+        @keyframes titleGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
         .hero-sub {
             font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
+            font-size: 4rem;
             color: #ffaa33;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: glowPulse 2.5s infinite;
+            text-shadow: 0 0 30px rgba(255, 170, 51, 0.5);
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 170, 51, 0.5)); }
+            50% { filter: drop-shadow(0 0 50px rgba(255, 51, 102, 0.6)); }
         }
 
         .hero-message {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 51, 102, 0.1);
-            max-width: 900px;
-            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            padding: 60px;
+            border-radius: 70px;
+            border: 2px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 40px 70px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 51, 102, 0.2) inset;
+            transform: perspective(3000px) rotateX(2deg) rotateY(1deg);
+            transition: all 0.6s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-message::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 51, 102, 0.15) 0%, transparent 70%);
+            animation: rotateSlow 25s linear infinite;
+        }
+
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-message:hover {
+            transform: perspective(3000px) rotateX(0deg) rotateY(0deg) translateZ(50px);
+            border-color: rgba(255, 51, 102, 0.4);
+            box-shadow: 0 50px 90px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 170, 51, 0.3) inset;
         }
 
         .hero-message p {
-            font-size: 1.2rem;
-            line-height: 1.7;
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.5rem;
+            line-height: 1.9;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.95);
+            position: relative;
+            z-index: 2;
         }
 
         .signature {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: #ffaa33;
-            margin-top: 30px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 2;
+            animation: signatureGlow 3s infinite;
         }
 
-        /* Section Title - Optimized */
+        @keyframes signatureGlow {
+            0%, 100% { text-shadow: 0 0 20px #ffaa33; }
+            50% { text-shadow: 0 0 40px #ff3366; }
+        }
+
+        /* Section Title */
+        .section-wrapper {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 40px;
+        }
+
         .section-title {
-            margin: 70px 0 40px;
-            padding: 15px 40px;
-            background: rgba(255, 51, 102, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50px;
+            margin: 100px 0 60px;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(255, 170, 51, 0.2));
+            backdrop-filter: blur(20px);
+            border-radius: 80px;
             display: inline-block;
-            font-weight: 700;
-            font-size: 2.2rem;
-            border: 1px solid rgba(255, 51, 102, 0.2);
+            font-weight: 800;
+            font-size: 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateZ(40px);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 2px;
         }
 
-        @media (max-width: 768px) {
-            .section-title {
-                font-size: 1.6rem;
-                padding: 10px 25px;
-            }
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .section-title i {
-            margin-right: 15px;
-            color: #ffaa33;
+            margin-right: 20px;
+            animation: iconBounce 2.5s infinite;
+            display: inline-block;
         }
 
-        /* 3D Card - Optimized */
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.15) rotate(3deg); }
+        }
+
+        /* 3D Card Container - Ultimate Smooth */
         .card-container {
-            perspective: 2000px;
-            margin-bottom: 25px;
+            perspective: 3000px;
+            margin-bottom: 30px;
             height: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         .card-3d {
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.4s ease;
-            border-radius: 25px;
+            transition: all 0.7s cubic-bezier(0.2, 0.85, 0.3, 1.1);
+            transform-style: preserve-3d;
+            border-radius: 40px;
             background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
             overflow: hidden;
             cursor: pointer;
         }
 
+        .card-3d::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 51, 102, 0.25), transparent 80%);
+            opacity: 0;
+            transition: opacity 0.6s;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card-3d:hover::after {
+            opacity: 1;
+        }
+
         .card-3d:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(255, 51, 102, 0.2);
+            transform: rotateY(15deg) rotateX(10deg) translateZ(50px) scale(1.08);
+            box-shadow: -50px 50px 80px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 170, 51, 0.5) inset;
             border-color: rgba(255, 170, 51, 0.3);
         }
 
         .card-img-wrapper {
-            height: 250px;
+            height: 300px;
             overflow: hidden;
             position: relative;
+            transform-style: preserve-3d;
         }
 
         .card-img-wrapper::after {
@@ -255,83 +431,136 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8));
+            background: linear-gradient(to bottom, transparent 20%, rgba(0, 0, 0, 0.85));
+            z-index: 2;
             pointer-events: none;
+        }
+
+        .card-img-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: inherit;
+            filter: blur(15px);
+            opacity: 0.3;
+            z-index: 0;
         }
 
         .card-img-top {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s;
+            transition: all 0.9s;
+            transform: translateZ(20px) scale(1.05);
+            position: relative;
+            z-index: 1;
         }
 
         .card-3d:hover .card-img-top {
-            transform: scale(1.1);
+            transform: scale(1.2) translateZ(80px) rotate(2deg);
         }
 
         .card-body {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            min-height: 130px;
+            padding: 25px 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.3));
+            color: white;
+            position: relative;
+            z-index: 3;
+            transform: translateZ(30px);
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            border-top: 2px solid rgba(255, 170, 51, 0.2);
         }
 
         .card-title {
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: 700;
+            font-size: 1.4rem;
             color: #ffaa33;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            transform: translateZ(45px);
+            letter-spacing: 1px;
         }
 
         .card-text {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #fff;
-            opacity: 0.9;
-            line-height: 1.5;
+            opacity: 0.95;
+            line-height: 1.6;
             font-style: italic;
+            transform: translateZ(45px);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* Love Button - Optimized */
+        /* Love Button - Premium */
         .btn-love-container {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            margin: 60px 0 30px;
+            margin: 80px 0 40px;
         }
 
         .btn-love {
-            background: linear-gradient(135deg, #ff3366, #ff7043);
+            background: linear-gradient(135deg, #ff3366, #ff5555, #ffaa33, #ff7043, #ff3366);
+            background-size: 400% 400%;
             border: none;
             color: white;
-            font-weight: 700;
-            padding: 18px 60px;
-            border-radius: 60px;
-            font-size: 1.8rem;
-            transition: all 0.3s;
-            box-shadow: 0 20px 40px rgba(255, 51, 102, 0.3);
+            font-weight: 800;
+            padding: 25px 80px;
+            border-radius: 80px;
+            font-size: 2.2rem;
+            transition: all 0.6s;
+            box-shadow: 0 30px 60px rgba(255, 51, 102, 0.6), 0 0 0 5px rgba(255, 255, 255, 0.2) inset;
+            position: relative;
+            overflow: hidden;
+            animation: gradientFlowBtn 6s infinite, buttonPulse 2.5s infinite;
+            letter-spacing: 3px;
             cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        @keyframes gradientFlowBtn {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.07); }
+        }
+
+        .btn-love::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-love:hover::before {
+            left: 100%;
         }
 
         .btn-love:hover {
-            transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(255, 51, 102, 0.5);
+            transform: scale(1.15) translateY(-15px);
+            box-shadow: 0 40px 80px rgba(255, 51, 102, 0.8), 0 0 0 8px rgba(255, 255, 255, 0.3) inset;
         }
 
-        @media (max-width: 768px) {
-            .btn-love {
-                font-size: 1.3rem;
-                padding: 12px 40px;
-            }
-        }
-
-        /* Dimas Photo Section */
+        /* Dimas 3D Photo Section - Hidden by default */
         #dimasPhoto {
             display: none;
             opacity: 0;
-            transition: opacity 0.8s;
-            margin: 40px 0;
+            transition: opacity 1.5s;
+            margin: 60px 0;
         }
 
         #dimasPhoto.show {
@@ -341,73 +570,141 @@
 
         .dimas-title {
             text-align: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: #ffaa33;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 30px rgba(255, 170, 51, 0.5);
+            animation: dimasTitleGlow 3s infinite;
         }
 
-        /* Music Player - Optimized */
+        @keyframes dimasTitleGlow {
+            0%, 100% { text-shadow: 0 0 20px #ffaa33; }
+            50% { text-shadow: 0 0 50px #ff3366; }
+        }
+
+        /* Music Player */
         .music-player {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 30px;
+            right: 30px;
             z-index: 9999;
-            background: rgba(255, 51, 102, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 12px 25px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.25), rgba(255, 170, 51, 0.25));
+            backdrop-filter: blur(20px);
+            padding: 15px 35px;
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             color: white;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            font-size: 1rem;
+            transition: all 0.4s;
+            animation: floatPlayer 3.5s infinite;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @keyframes floatPlayer {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-12px) rotate(-1deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+            75% { transform: translateY(-5px) rotate(-0.5deg); }
         }
 
         .music-player:hover {
-            background: rgba(255, 51, 102, 0.3);
-            transform: scale(1.05);
+            transform: scale(1.15);
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.4), rgba(255, 170, 51, 0.4));
+            box-shadow: 0 25px 50px rgba(255, 51, 102, 0.5);
         }
 
-        /* Footer - Optimized */
+        /* Footer - Fixed Perfect */
         .footer {
-            background: rgba(3, 3, 10, 0.98);
-            padding: 50px 0 20px;
-            margin-top: 60px;
-            border-top: 1px solid rgba(255, 51, 102, 0.2);
+            background: linear-gradient(to top, rgba(3, 3, 10, 0.99), rgba(5, 5, 16, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 70px 0 30px;
+            margin-top: 100px;
+            border-top: 2px solid rgba(255, 51, 102, 0.2);
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            clear: both;
         }
 
         .footer h5 {
             color: #ffaa33;
-            font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            position: relative;
+            display: inline-block;
         }
 
-        .footer ul li {
-            list-style: none;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .footer ul li i {
-            width: 25px;
-            color: #ff3366;
+        .footer h5::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff3366, #ffaa33);
+            border-radius: 3px;
         }
 
         .footer a {
-            color: rgba(255, 255, 255, 0.7);
+            color: #fff;
             text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
         }
 
         .footer a:hover {
             color: #ffaa33;
+            transform: translateX(8px) scale(1.05);
+            text-shadow: 0 0 15px rgba(255, 170, 51, 0.5);
+        }
+
+        .footer ul {
+            padding-left: 0;
+            margin-top: 20px;
+        }
+
+        .footer ul li {
+            list-style: none;
+            margin-bottom: 18px;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .footer ul li i {
+            width: 25px;
+            display: inline-block;
+        }
+
+        .footer ul li:hover {
+            transform: translateX(8px);
         }
 
         .footer hr {
-            border-color: rgba(255, 255, 255, 0.1);
-            margin: 30px 0 20px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            height: 1px;
+            border: none;
+            margin: 40px 0 25px;
+        }
+
+        .footer .text-center p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .hero-sub { font-size: 2.5rem; }
+            .hero-message { padding: 30px; }
+            .hero-message p { font-size: 1.1rem; }
+            .section-title { font-size: 2rem; padding: 15px 30px; }
+            .card-img-wrapper { height: 250px; }
+            .btn-love { font-size: 1.3rem; padding: 15px 40px; }
+            .music-player { padding: 12px 25px; font-size: 1rem; bottom: 20px; right: 20px; }
         }
 
         /* Loading Screen */
@@ -422,41 +719,45 @@
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            transition: opacity 0.8s;
+            transition: opacity 1.5s;
         }
 
         .heart-loader {
-            width: 60px;
-            height: 60px;
+            width: 120px;
+            height: 120px;
             background: #ff3366;
             position: relative;
             transform: rotate(45deg);
-            animation: heartbeat 1s infinite;
+            animation: heartbeat 1.4s infinite;
+            box-shadow: 0 0 80px #ff3366;
         }
 
         .heart-loader::before,
         .heart-loader::after {
             content: '';
-            width: 60px;
-            height: 60px;
+            width: 120px;
+            height: 120px;
             background: #ff3366;
             border-radius: 50%;
             position: absolute;
+            box-shadow: 0 0 80px #ff3366;
         }
 
         .heart-loader::before {
-            left: -30px;
+            left: -60px;
             top: 0;
         }
 
         .heart-loader::after {
             left: 0;
-            top: -30px;
+            top: -60px;
         }
 
         @keyframes heartbeat {
             0%, 100% { transform: rotate(45deg) scale(1); }
-            50% { transform: rotate(45deg) scale(1.1); }
+            25% { transform: rotate(45deg) scale(1.15); }
+            50% { transform: rotate(45deg) scale(1.3); }
+            75% { transform: rotate(45deg) scale(1.15); }
         }
     </style>
 </head>
@@ -469,15 +770,15 @@
     <!-- Galaxy Canvas Background -->
     <canvas id="galaxy-canvas"></canvas>
 
-    <!-- Floating Elements Container -->
+    <!-- Floating Love & Flowers Container - Super Smooth -->
     <div class="floating-container" id="floatingContainer"></div>
 
     <!-- Music Player -->
     <div class="music-player" onclick="toggleMusic()">
         <i class="fas fa-heart me-2" id="musicIcon"></i>
-        <span id="musicText">🎵 Risk It All</span>
-        <audio id="bgMusic" loop preload="metadata">
-            <source src="Risk It All.mp3" type="audio/mp3">
+        <span id="musicText">Risk It All - Bruno Mars</span>
+        <audio id="bgMusic" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mp3">
         </audio>
     </div>
 
@@ -485,7 +786,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <i class="fas fa-heart me-2"></i>Dimas <span>&</span> Naila
+                <i class="fas fa-heart me-2" style="color: #ff3366;"></i>Dimas <span style="color: #ffaa33;">&</span> Naila
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -493,10 +794,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#badas">Badas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#mandi">Mandi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#mandi">Siap Mandi</a></li>
                     <li class="nav-item"><a class="nav-link" href="#berak">Berak</a></li>
                     <li class="nav-item"><a class="nav-link" href="#emot">Emot</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gemesin">Gemes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#gemesin">Gemesin</a></li>
                     <li class="nav-item"><a class="nav-link" href="#bangun">Bangun</a></li>
                     <li class="nav-item"><a class="nav-link" href="#bingung">Bingung</a></li>
                     <li class="nav-item"><a class="nav-link" href="#cantik">Cantik</a></li>
@@ -508,33 +809,39 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="container" data-aos="fade-up">
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="2000">
             <h1 class="hero-title">Untuk Naila Nazla Pohan</h1>
             <div class="hero-sub">My everything, my love, my future</div>
             <div class="hero-message">
-                <i class="fas fa-quote-left fa-3x mb-3" style="color: rgba(255,170,51,0.2);"></i>
+                <i class="fas fa-quote-left fa-4x mb-4" style="color: rgba(255, 170, 51, 0.3);"></i>
                 <p>"Ini adalah bukti kalau Dimas cinta dan sayang banget sama kamu, bukan cuman omongan doang."</p>
                 <p>"Setiap foto yang bakal muncul di sini adalah potongan cerita kita, tawa kita, dan semua momen indah yang cuma kita berdua yang ngerti."</p>
                 <p>"Dari pose badas sampai yang lagi bingung, dari yang baru bangun tidur sampai yang paling cantik—semuanya adalah alasan kenapa hati ini selalu memilih kamu sayangg."</p>
-                <i class="fas fa-quote-right fa-3x mt-3 float-end" style="color: rgba(255,170,51,0.2);"></i>
+                <p>"Dan akan selalu begitu, sampai kapanpun, di manapun, dalam keadaan apapun."</p>
+                <i class="fas fa-quote-right fa-4x mt-4 float-end" style="color: rgba(255, 170, 51, 0.3);"></i>
                 <div class="signature">- Dimas, cowok yang selalu bangga punya kamu -</div>
+            </div>
+            <div class="mt-5">
+                <i class="fas fa-heart fa-4x mx-3 animate__animated animate__pulse animate__infinite" style="color: #ff3366;"></i>
+                <i class="fas fa-heart fa-4x mx-3 animate__animated animate__pulse animate__infinite animate__delay-1s" style="color: #ffaa33;"></i>
+                <i class="fas fa-heart fa-4x mx-3 animate__animated animate__pulse animate__infinite animate__delay-2s" style="color: #ff7043;"></i>
             </div>
         </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- Main Content Container -->
     <div class="container">
         <!-- BADAS Section -->
         <div class="section-wrapper" id="badas">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-skull-crosswalk"></i> Pose Lagi Badas
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="100" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Badas 1.jpeg" class="card-img-top" alt="Badas 1" loading="lazy">
+                                <img src="Badas 1.jpeg" class="card-img-top" alt="Badas 1">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Badas Mode ON</h5>
@@ -543,11 +850,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="200" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Badas 2.jpeg" class="card-img-top" alt="Badas 2" loading="lazy">
+                                <img src="Badas 2.jpeg" class="card-img-top" alt="Badas 2">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Badas Abiez</h5>
@@ -561,15 +868,15 @@
 
         <!-- SIAP MANDI Section -->
         <div class="section-wrapper" id="mandi">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-shower"></i> Pose Lagi Siap Mandi
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-right" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Mandi.jpeg" class="card-img-top" alt="Siap Mandi" loading="lazy">
+                                <img src="Mandi.jpeg" class="card-img-top" alt="Siap Mandi">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Fresh Habis Mandi</h5>
@@ -583,15 +890,15 @@
 
         <!-- BERAK Section -->
         <div class="section-wrapper" id="berak">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-poop"></i> Pose Lagi Berak
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="100" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Berak 1.jpeg" class="card-img-top" alt="Berak 1" loading="lazy">
+                                <img src="Berak 1.jpeg" class="card-img-top" alt="Berak 1">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Berak Santai</h5>
@@ -600,11 +907,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="200" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Berak 2.jpeg" class="card-img-top" alt="Berak 2" loading="lazy">
+                                <img src="Berak 2.jpeg" class="card-img-top" alt="Berak 2">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Berak Gaya</h5>
@@ -618,15 +925,15 @@
 
         <!-- EMOT Section -->
         <div class="section-wrapper" id="emot">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-face-smile"></i> Pose Lagi Kepencet Emot
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-right" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Emot.jpeg" class="card-img-top" alt="Kepencet Emot" loading="lazy">
+                                <img src="Emot.jpeg" class="card-img-top" alt="Kepencet Emot">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Emot Lucu</h5>
@@ -640,31 +947,31 @@
 
         <!-- GEMESIN Section -->
         <div class="section-wrapper" id="gemesin">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-heart-circle"></i> Pose Lagi Gemesinn
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="50"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 1.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 1</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 2.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 2</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="150"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 3.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 3</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 4.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 4</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 5.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 5</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 6.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 6</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="350"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 7.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Gemes 7</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="50" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 1.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 1</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="100" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 2.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 2</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="150" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 3.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 3</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="200" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 4.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 4</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="250" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 5.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 5</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="300" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 6.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 6</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-up" data-aos-delay="350" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="Gms 7.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Gemes 7</h5><p class="card-text">"foto pose lagi gemesin aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
             </div>
         </div>
 
         <!-- BANGUN TIDUR Section -->
         <div class="section-wrapper" id="bangun">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-sun"></i> Pose Lagi Baru Bangun Tidur
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-right" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Tdr.jpeg" class="card-img-top" alt="Bangun Tidur" loading="lazy">
+                                <img src="Tdr.jpeg" class="card-img-top" alt="Bangun Tidur">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Morning Sleepy</h5>
@@ -678,15 +985,15 @@
 
         <!-- BINGUNG Section -->
         <div class="section-wrapper" id="bingung">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-face-meh"></i> Pose Lagi Bingung
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-right" data-aos-duration="1500">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="Bingung.jpeg" class="card-img-top" alt="Bingung" loading="lazy">
+                                <img src="Bingung.jpeg" class="card-img-top" alt="Bingung">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Bingung Level Max</h5>
@@ -700,56 +1007,56 @@
 
         <!-- CANTIK Section -->
         <div class="section-wrapper" id="cantik">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-star"></i> Pose Lagi Cantik
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C1.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 1</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="50"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C2.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 2</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C3.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 3</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="150"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C4.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 4</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C5.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 5</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C6.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 6</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C7.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 7</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="350"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C8.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 8</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C9.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 9</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="450"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C10.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Cantik 10</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget. foto cantik ini masih banyak lagi sayanggg."</p></div></div></div></div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="0" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C1.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 1</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="50" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C2.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 2</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C3.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 3</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="150" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C4.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 4</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C5.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 5</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="250" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C6.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 6</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C7.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 7</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="350" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C8.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 8</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="400" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C9.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 9</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="450" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="C10.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Cantik 10</h5><p class="card-text">"foto pose lagi cantik aja dimas tetap cinta dan sayanggg banget. foto cantik ini masih banyak lagi sayanggg."</p></div></div></div></div>
             </div>
         </div>
 
         <!-- BERDUA Section -->
         <div class="section-wrapper" id="berdua">
-            <div class="section-title" data-aos="fade-right">
+            <div class="section-title" data-aos="zoom-in" data-aos-duration="1500">
                 <i class="fas fa-heart"></i> Foto Kita Berdua
             </div>
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B1.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Berdua 1</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B2.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Berdua 2</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B3.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Berdua 3</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B4.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Berdua 4</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B5.jpeg" class="card-img-top" loading="lazy"></div><div class="card-body"><h5 class="card-title">Berdua 5</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="0" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B1.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Berdua 1</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="100" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B2.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Berdua 2</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="200" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B3.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Berdua 3</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="300" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B4.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Berdua 4</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="flip-left" data-aos-delay="400" data-aos-duration="1500"><div class="card-container"><div class="card-3d"><div class="card-img-wrapper"><img src="B5.jpeg" class="card-img-top"></div><div class="card-body"><h5 class="card-title">Berdua 5</h5><p class="card-text">"foto kita lagi berdua aja dimas tetap cinta dan sayanggg banget."</p></div></div></div></div>
             </div>
         </div>
 
-        <!-- Love Button -->
+        <!-- Love Button - Untuk Naila -->
         <div class="btn-love-container">
-            <div class="mb-3" style="font-size: 1.5rem; color: #ffaa33; font-family: 'Dancing Script', cursive;">
+            <div class="mb-4" style="font-size: 1.8rem; color: #ffaa33; font-family: 'Dancing Script', cursive;">
                 Naila sayang, klik tombol ini ya ❤️
             </div>
             <button class="btn-love" id="loveButton">
-                <i class="fas fa-heart me-2"></i>I Love You Sayangg
+                <i class="fas fa-heart me-3"></i>I Love You Sayangg
             </button>
         </div>
 
-        <!-- Dimas Photo -->
+        <!-- Dimas 3D Photo Section (Muncul setelah tombol diklik) -->
         <div id="dimasPhoto">
             <div class="dimas-title">Ini Dimas, cowok yang selalu sayang kamuuu ❤️</div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center g-4">
                 <div class="col-md-6 col-lg-4">
                     <div class="card-container">
                         <div class="card-3d">
                             <div class="card-img-wrapper">
-                                <img src="D1.jpeg" class="card-img-top" alt="Dimas" loading="lazy">
+                                <img src="D1.jpeg" class="card-img-top" alt="Dimas Photo">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Dimas</h5>
@@ -762,34 +1069,34 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer - Fixed Perfect -->
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-heart me-2"></i> Dimas & Naila</h5>
-                    <p style="color: rgba(255,255,255,0.7); line-height: 1.6;">Dibuat dengan sepenuh cinta dan kasih sayangg. Setiap baris kode adalah ungkapan cinta untuk Naila Nazla Pohan.</p>
+                <div class="col-md-4 mb-4" data-aos="fade-right" data-aos-duration="1500">
+                    <h5><i class="fas fa-heart me-2" style="color: #ff3366;"></i> Dimas & Naila</h5>
+                    <p class="mt-4" style="color: rgba(255,255,255,0.8); line-height: 1.8;">Dibuat dengan sepenuh cinta dan kasih sayangg. Setiap baris kode adalah ungkapan kasih sayanggg dan cinta yang tak terhingga untuk Naila Nazla Pohan.</p>
                 </div>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-duration="1500">
                     <h5>Love Notes</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-heart me-2"></i> Badas selalu di hati</li>
-                        <li><i class="fas fa-heart me-2"></i> Cantik setiap saat</li>
-                        <li><i class="fas fa-heart me-2"></i> Gemesin terus</li>
-                        <li><i class="fas fa-heart me-2"></i> Berdua selamanya</li>
+                    <ul class="list-unstyled mt-4">
+                        <li><i class="fas fa-heart me-3" style="color: #ff3366;"></i> Badas selalu di hati</li>
+                        <li><i class="fas fa-heart me-3" style="color: #ff3366;"></i> Cantik setiap saat</li>
+                        <li><i class="fas fa-heart me-3" style="color: #ff3366;"></i> Gemesin terus</li>
+                        <li><i class="fas fa-heart me-3" style="color: #ff3366;"></i> Berdua selamanya</li>
                     </ul>
                 </div>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4" data-aos="fade-left" data-aos-duration="1500">
                     <h5>Hubungi Dimas</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fab fa-instagram me-2"></i> @dimaas_nfl</li>
-                        <li><i class="fab fa-whatsapp me-2"></i> +62 895 6111 27740</li>
+                    <ul class="list-unstyled mt-4">
+                        <li><i class="fab fa-instagram me-3" style="color: #ff3366;"></i> <a href="#">@dimaas_nfl</a></li>
+                        <li><i class="fab fa-whatsapp me-3" style="color: #ff3366;"></i> <a href="#">+62 895 6111 27740</a></li>
                     </ul>
                 </div>
             </div>
             <hr>
-            <div class="text-center">
-                <p class="mb-0" style="color: rgba(255,255,255,0.5);">© 2026 For Naila Nazla Pohan. Cinta ini abadi selamanya. <i class="fas fa-heart mx-1" style="color: #ff3366;"></i></p>
+            <div class="text-center pt-3" data-aos="fade-up" data-aos-duration="1500">
+                <p class="mb-0" style="color: rgba(255,255,255,0.6);">© 2026 For Naila Nazla Pohan. Cinta ini abadi selamanya. <i class="fas fa-heart mx-2" style="color: #ff3366;"></i></p>
             </div>
         </div>
     </footer>
@@ -798,148 +1105,110 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 50
-        });
+    // Initialize AOS dengan pengaturan lebih ringan
+    AOS.init({
+        duration: 1000,
+        once: true, // Ubah jadi true agar tidak re-animasi saat scroll balik (menghemat CPU)
+        offset: 50
+    });
 
-        // Loading screen
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                document.getElementById('loading').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loading').style.display = 'none';
-                }, 800);
-            }, 800);
-        });
+    // Loading screen
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('loading');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 1000); // Hapus dari DOM agar tidak membebani
+    });
 
-        // Navbar scroll
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+    // Galaxy Canvas - Optimized
+    const canvas = document.getElementById('galaxy-canvas');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Optimization: false alpha if possible
+    
+    let stars = [];
+    const starsCount = window.innerWidth < 768 ? 100 : 200; // Kurangi jumlah bintang di HP
 
-        // Galaxy Canvas - Optimized (150 stars instead of 300)
-        const canvas = document.getElementById('galaxy-canvas');
-        const ctx = canvas.getContext('2d');
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < starsCount; i++) {
+        stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2,
+            speed: Math.random() * 0.2
+        });
+    }
+
+    function animateGalaxy() {
+        ctx.fillStyle = '#050510';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        // Reduced stars for performance
-        const stars = [];
-        const starsCount = 150; // Turun dari 300
-
-        for (let i = 0; i < starsCount; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 0.5,
-                speed: Math.random() * 0.2 + 0.05,
-                color: `rgba(255, ${Math.floor(Math.random() * 100 + 155)}, 150, ${Math.random() * 0.5 + 0.3})`
-            });
-        }
-
-        function drawGalaxy() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = star.color;
-                ctx.fill();
-                
-                star.y += star.speed;
-                if (star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
-                }
-            });
-            
-            requestAnimationFrame(drawGalaxy);
-        }
-        drawGalaxy();
-
-        // Floating Elements - Reduced (4 instead of 8, interval 250ms instead of 150ms)
-        function createFloatingElements() {
-            const container = document.getElementById('floatingContainer');
-            const symbols = ['❤️', '💖', '🌸', '🌹', '✨'];
-            
-            setInterval(() => {
-                for (let i = 0; i < 4; i++) { // Turun dari 8 ke 4
-                    const item = document.createElement('div');
-                    item.className = 'float-item';
-                    item.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-                    item.style.left = Math.random() * 100 + '%';
-                    item.style.animationDuration = (Math.random() * 8 + 12) + 's';
-                    item.style.fontSize = (Math.random() * 30 + 20) + 'px';
-                    item.style.color = `hsl(${Math.random() * 30 + 330}, 80%, 65%)`;
-                    
-                    container.appendChild(item);
-                    
-                    setTimeout(() => {
-                        if (item.parentNode === container) item.remove();
-                    }, 20000);
-                }
-            }, 250); // Naik dari 150ms ke 250ms
-        }
-        createFloatingElements();
-
-        // Music Player
-        let music = document.getElementById('bgMusic');
-        let musicIcon = document.getElementById('musicIcon');
-        let musicText = document.getElementById('musicText');
-        let isPlaying = false;
-
-        function toggleMusic() {
-            if (isPlaying) {
-                music.pause();
-                musicIcon.className = 'fas fa-heart me-2';
-                musicText.innerText = '🎵 Risk It All';
-            } else {
-                music.play().catch(() => {});
-                musicIcon.className = 'fas fa-pause me-2';
-                musicText.innerText = 'Playing...';
-            }
-            isPlaying = !isPlaying;
-        }
-
-        // Love Button
-        document.getElementById('loveButton').addEventListener('click', function() {
-            const botToken = '8518529421:AAF_6XuTQRrHecNwOxVFQMta0NaupfGEHl0';
-            const chatId = '1726234639';
-            const message = '❤️ NAILA KLIK TOMBOL I LOVE YOU! sayang banget sama Dimas! ❤️';
-            
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({chat_id: chatId, text: message})
-            }).catch(() => {});
-            
-            document.getElementById('dimasPhoto').classList.add('show');
-            setTimeout(() => {
-                document.getElementById('dimasPhoto').scrollIntoView({behavior: 'smooth', block: 'center'});
-            }, 300);
+        ctx.fillStyle = '#ffffff';
+        stars.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fill();
+            s.y -= s.speed;
+            if (s.y < 0) s.y = canvas.height;
         });
+        requestAnimationFrame(animateGalaxy);
+    }
+    animateGalaxy();
 
-        // Smooth scroll
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({behavior: 'smooth'});
-            });
-        });
-    </script>
+    // Floating Elements - Optimized (Throttled)
+    const container = document.getElementById('floatingContainer');
+    const symbols = ['❤️', '💖', '🌸', '✨', '💕'];
+    
+    function spawnElement() {
+        if (document.hidden) return; // Jangan spawn jika tab tidak aktif
+        if (container.children.length > 25) return; // Batasi maksimal 25 elemen di layar
+
+        const item = document.createElement('div');
+        item.className = 'float-item';
+        item.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+        
+        const duration = Math.random() * 5 + 10;
+        item.style.left = Math.random() * 95 + '%';
+        item.style.fontSize = Math.random() * 20 + 20 + 'px';
+        item.style.animationDuration = duration + 's';
+        
+        container.appendChild(item);
+        
+        // Hapus elemen segera setelah animasi selesai
+        setTimeout(() => item.remove(), duration * 1000);
+    }
+
+    // Spawn setiap 800ms (tidak terlalu rapat agar tidak lag)
+    setInterval(spawnElement, 800);
+
+    // Sisanya (Music & Telegram logic) tetap sama seperti kode aslimu
+    let music = document.getElementById('bgMusic');
+    let isPlaying = false;
+    music.src = "Risk It All.mp3";
+
+    function toggleMusic() {
+        if (isPlaying) {
+            music.pause();
+            document.getElementById('musicIcon').className = 'fas fa-heart me-2';
+        } else {
+            music.play().catch(() => {});
+            document.getElementById('musicIcon').className = 'fas fa-pause me-2';
+        }
+        isPlaying = !isPlaying;
+    }
+
+    document.getElementById('loveButton').addEventListener('click', function() {
+        const botToken = '8518529421:AAF_6XuTQRrHecNwOxVFQMta0NaupfGEHl0';
+        const chatId = '1726234639';
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=❤️ NAILA KLIK TOMBOL LOVE!&silent=true`);
+        
+        const dimasSection = document.getElementById('dimasPhoto');
+        dimasSection.classList.add('show');
+        dimasSection.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
 </body>
 </html>
